@@ -4,7 +4,7 @@ agent any
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
   environment {
-    DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
   }
   stages {
     stage('Docker Build and Tag') {
