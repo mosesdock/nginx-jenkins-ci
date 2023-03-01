@@ -12,6 +12,11 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
   }
   stages {
+   stage('Install Docker') {
+    steps { 
+      sh 'apk add --no-cache docker-cli' 
+    } 
+   }
     stage('Build') {
       steps {
         sh 'docker build -t mosesdock/nginxtest .'
