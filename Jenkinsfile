@@ -1,7 +1,7 @@
 pipeline {
 agent any
   options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
+    buildDiscarder(logRotator(numToKeepStr: '6'))
   }
   environment {
     DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
