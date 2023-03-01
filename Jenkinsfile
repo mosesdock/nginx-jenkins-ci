@@ -1,5 +1,9 @@
 pipeline {
     agent any
+     environment {
+           registry = "mosesdock/Nginx-docker-test"
+           registryCredential = 'mosesdock'
+  }
  stages {
   stage('Docker Build and Tag') {
            steps {
