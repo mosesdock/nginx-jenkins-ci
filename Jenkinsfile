@@ -1,5 +1,5 @@
 pipeline {
-  agent any
+agent any
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
@@ -7,25 +7,31 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
   }
   stages {
-    stage('Build') {
-      steps {
-        sh 'docker build -t mosesdock/nginxtest .'
-      }
-    }
+    stage('Docker Build and Tag') {
+           steps {
+              
+                sh 'docker build -t mosesdock/nginxtest:latest .' 
+                sh 'docker tag nginxtest mosesdock/nginxtest:latest'
+                sh 'docker tag nginxtest mosesdock/nginxtest:$BUILD_NUMBER'
+               
+          }
+        }
     stage('Login') {
       steps {
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
-    stage('Push') {
-      steps {
-        sh 'docker push mosesdock/nginxtest'
-      }
-    }
-  }
-  post {
+   stage('Publish image to Docker Hub') {
+            steps {
+          sh  'docker push mosesdock/nginxtest:latest'
+          sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
+        }
+                  
+   }
+    post {
     always {
       sh 'docker logout'
     }
   }
+}
 }
