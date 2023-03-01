@@ -21,17 +21,16 @@ agent any
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
-   stage('Publish image to Docker Hub') {
+    stage('Publish image to Docker Hub') {
             steps {
           sh  'docker push mosesdock/nginxtest:latest'
           sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
         }
-                  
+    }              
    }
     post {
     always {
       sh 'docker logout'
     }
   }
-}
 }
