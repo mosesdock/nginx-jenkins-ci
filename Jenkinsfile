@@ -3,7 +3,13 @@ pipeline {
     environment {
 		DOCKERHUB_CREDENTIALS=credentials('mosesdock-dockerhub')
  stages {
-  stage('Docker Build and Tag') {
+ 	stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+	stage('Docker Build and Tag') {
            steps {
               
                 sh 'docker build -t nginxtest:latest .' 
@@ -13,7 +19,7 @@ pipeline {
           }
         }
      
-  stage('Publish image to Docker Hub') {
+  	stage('Publish image to Docker Hub') {
           
             steps {
         withDockerRegistry([ credentialsId: "mosesdock-dockerHub", url: "" ]) {
