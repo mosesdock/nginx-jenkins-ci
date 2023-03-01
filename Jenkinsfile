@@ -29,12 +29,12 @@ agent any
           sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
         }
                   
-          }
-        }
-  post {
+   }
+    post {
     always {
       sh 'docker logout'
     }
   }
+}
 }
 }
