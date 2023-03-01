@@ -1,8 +1,11 @@
 pipeline {
     agent any
-    environment {
+    
+	environment {
 		DOCKERHUB_CREDENTIALS=credentials('mosesdock-dockerhub')
- stages {
+    }
+ 
+stages {
  	stage('Login') {
 
 			steps {
