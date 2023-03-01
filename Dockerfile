@@ -1,8 +1,8 @@
 FROM nginx:latest
 
 # drop symlinks
-RUN unlink /var/log/nginx/access.log
-RUN unlink /var/log/nginx/error.log
+#RUN unlink /var/log/nginx/access.log
+#RUN unlink /var/log/nginx/error.log
 #config
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
