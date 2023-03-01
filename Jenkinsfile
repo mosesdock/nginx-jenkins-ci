@@ -1,10 +1,5 @@
 pipeline {
-  agent { 
-    docker { 
-      image 'docker:latest' 
-      args '-v /var/run/docker.sock:/var/run/docker.sock' 
-    } 
-  }
+agent any
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
@@ -12,11 +7,6 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
   }
   stages {
-   stage('Install Docker') {
-    steps { 
-      sh 'apk add --no-cache docker-cli' 
-    } 
-   }
     stage('Build') {
       steps {
         sh 'docker build -t mosesdock/nginxtest .'
