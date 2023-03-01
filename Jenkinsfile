@@ -4,14 +4,14 @@ pipeline {
     registryCredential = 'mosesdock-dockerhub'
     dockerImage = ''
   }
-   stage('Initialize'){
+  
+  agent any
+  stages {
+     stage('Initialize'){
         def dockerHome = tool 'myDocker'
         env.PATH = "${dockerHome}/bin:${env.PATH}"
     }
-  agent any
-  stages {
-    
-    stage('Building image') {
+     stage('Building image') {
       steps{
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
