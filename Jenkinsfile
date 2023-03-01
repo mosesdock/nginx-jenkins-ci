@@ -11,7 +11,7 @@ agent any
            steps {
               
                 sh 'docker build -t mosesdock/nginxtest:$BUILD_NUMBER .' 
-                // sh 'docker tag nginxtest mosesdock/nginxtest:latest'
+                
                 sh 'docker tag nginxtest mosesdock/nginxtest:$BUILD_NUMBER'
                
           }
@@ -23,13 +23,14 @@ agent any
     }
     stage('Publish image to Docker Hub') {
             steps {
-          sh  'docker push mosesdock/nginxtest:latest'
+          
           sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
         }
     }              
    }
     post {
     always {
+        cleanWs()
       sh 'docker logout'
     }
   }
