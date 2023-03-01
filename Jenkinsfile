@@ -1,26 +1,31 @@
 pipeline {
-    agent any
- stages {
-  stage('Docker Build and Tag') {
-           steps {
-              
-                sh 'docker build -t nginxtest:latest .' 
-                sh 'docker tag nginxtest mosesdock/nginxtest:latest'
-                sh 'docker tag nginxtest mosesdock/nginxtest:$BUILD_NUMBER'
-               
-          }
-        }
-     
-  stage('Publish image to Docker Hub') {
-          
-            steps {
-        withDockerRegistry([ credentialsId: "mosesdock-dockerHub", url: "" ]) {
-          sh  'docker push mosesdock/nginxtest:latest'
-          sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
-        }
-                  
-          }
-        }
-   
- }
+  agent any
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('mosesdock-dockerhub')
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker build -t mosesdock/nginxtest .'
+      }
+    }
+    stage('Login') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+      }
+    }
+    stage('Push') {
+      steps {
+        sh 'docker push mosesdock/nginxtest'
+      }
+    }
+  }
+  post {
+    always {
+      sh 'docker logout'
+    }
+  }
 }
