@@ -1,37 +1,28 @@
 pipeline {
-    agent any
+  environment {
+    registry = "mosesdock/nginxtest"
+    registryCredential = 'mosesdock-dockerhub'
+    dockerImage = ''
+  }
+  agent any
+  stages {
     
-	environment {
-		DOCKERHUB_CREDENTIALS=credentials('mosesdock-dockerhub')
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
     }
- 
-stages {
- 	stage('Login') {
-
-			steps {
-				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-			}
-		}
-	stage('Docker Build and Tag') {
-           steps {
-              
-                sh 'docker build -t nginxtest:latest .' 
-                sh 'docker tag nginxtest mosesdock/nginxtest:latest'
-                sh 'docker tag nginxtest mosesdock/nginxtest:$BUILD_NUMBER'
-               
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
           }
         }
-     
-  	stage('Publish image to Docker Hub') {
-          
-            steps {
-        withDockerRegistry([ credentialsId: "mosesdock-dockerHub", url: "" ]) {
-          sh  'docker push mosesdock/nginxtest:latest'
-          sh  'docker push mosesdock/nginxtest:$BUILD_NUMBER' 
-        }
-                  
-          }
-        }
+      }
+    }
    
- }
+  }
 }
