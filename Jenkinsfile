@@ -10,8 +10,8 @@ agent any
     stage('Docker Build and Tag') {
            steps {
               
-                sh 'docker build -t mosesdock/nginxtest:latest .' 
-                sh 'docker tag nginxtest mosesdock/nginxtest:latest'
+                sh 'docker build -t mosesdock/nginxtest:$BUILD_NUMBER .' 
+                // sh 'docker tag nginxtest mosesdock/nginxtest:latest'
                 sh 'docker tag nginxtest mosesdock/nginxtest:$BUILD_NUMBER'
                
           }
